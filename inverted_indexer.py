@@ -12,17 +12,18 @@ def inverse_index(inverted_index, docs_base_dir, num_sub_dirs, path_url_map_file
 	# For all documents
 	for i in range(num_sub_dirs):
 		curr_dir = docs_base_dir + str(i) + "/"
-		# for root, dirs, filenames in os.walk(curr_dir):
-		filenames = ['106','107']
-		for f in filenames:
-			fullpath = os.path.join(curr_dir, f)
-			tokenized_data_filtered = Tokenizer.tokenize_document(fullpath)
+		
+		for root, dirs, filenames in os.walk(curr_dir):
+		#filenames = ['106','107']
+			for f in filenames:
+				fullpath = os.path.join(curr_dir, f)
+				tokenized_data_filtered = Tokenizer.tokenize_document(fullpath)
 
-			doc = {}
-			doc["local_path"] = str(i) + "/" + f
-			doc["url"] = path_url_map[doc["local_path"]]
+				doc = {}
+				doc["local_path"] = str(i) + "/" + f
+				doc["url"] = path_url_map[doc["local_path"]]
 
-			inverted_index = index_document(inverted_index, doc, tokenized_data_filtered)
+				inverted_index = index_document(inverted_index, doc, tokenized_data_filtered)
 
 	return inverted_index
 
