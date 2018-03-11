@@ -27,6 +27,7 @@ def tokenize_document(fullpath):
 	for i in range(len(tokenized_data)):
 		token = tokenized_data[i]
 		if token.isalnum():
+			token = token.lower()
 			if token not in tokenized_data_filtered:
 				tokenized_data_filtered[token] = [i]
 			else:
