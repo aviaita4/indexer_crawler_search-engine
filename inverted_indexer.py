@@ -19,12 +19,18 @@ def inverse_index(inverted_index, docs_base_dir, num_sub_dirs, path_url_map_file
 		# filenames = ['106','107']
 			for f in filenames:
 				fullpath = os.path.join(curr_dir, f)
-				tokenized_data_filtered = Tokenizer.tokenize_document(fullpath)
+				(tokenized_data_filtered, term_frequency) = Tokenizer.tokenize_document(fullpath)
 				doc = {}
 				doc["local_path"] = str(i) + "/" + f
 				#doc["url"] = path_url_map[doc["local_path"]]
 
 				inverted_index = index_document(inverted_index, doc, tokenized_data_filtered)
+				if 'document_details_counts' not in inverted_index:
+					inverted_index['document_details_counts'] = {}
+					inverted_index['document_details_counts'][str(i) + "/" + f] = term_frequency
+				else:
+					inverted_index['document_details_counts'][str(i) + "/" + f] = term_frequency
+
 
 		print(str(i+1) + "/" + str(num_sub_dirs) + " sub_directories done.")
 	return inverted_index
@@ -43,15 +49,20 @@ def index_document(inverted_index, doc, tokenized_data_filtered):
 
 		if token_name not in inverted_index:
 
-			inverted_index[token_name] = {}
-			inverted_index[token_name]["f"] = len(token_positions)
-			inverted_index[token_name]["d"] = []
+			inverted_index[token_name] = []
+			# inverted_index[token_name]["f"] = len(token_positions)
+			# inverted_index[token_name]["d"] = []
 			
-		else:
+			# inverted_index[token_name].append(document_map)
+		document_map = {}
+		document_map['loc'] = path
+		document_map['pos'] = token_positions
+			
+		# else:
 
-			inverted_index[token_name]["f"] += len(token_positions)
-
-		#inverted_index[token_name]["documents_list"].append([url, path, token_positions])
-		inverted_index[token_name]["d"].append([path, token_positions])
+			# inverted_index[token_name]["f"] += len(token_positions)
+		inverted_index[token_name].append(document_map)		
+		# inverted_index[token_name]["documents_list"].append([url, path, token_positions])
+		# inverted_index[token_name]["d"].append([path, token_positions])
 
 	return inverted_index
